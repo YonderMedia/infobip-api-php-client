@@ -12,3 +12,8 @@ composer.lock
 
 # PHPUnit cache
 .phpunit.result.cache
+/.idea/.gitignore
+/.idea/infobip-api-php-client.iml
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/vcs.xml
