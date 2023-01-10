@@ -23,13 +23,14 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsRegionalOptions Class Doc Comment
  *
  * @category Class
+ * @description Region-specific parameters, often imposed by local laws. Use this, if country or region that you are sending an SMS to requires additional information.
  * @package  Infobip
  * @author   Infobip Support
  * @link     https://www.infobip.com
@@ -54,7 +55,8 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
       * @var string[]
       */
     protected static $openAPITypes = [
-        'indiaDlt' => '\Infobip\Model\SmsIndiaDltOptions'
+        'indiaDlt' => '\Infobip\Model\SmsIndiaDltOptions',
+        'turkeyIys' => '\Infobip\Model\SmsTurkeyIysOptions'
     ];
 
     /**
@@ -65,7 +67,8 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'indiaDlt' => null
+        'indiaDlt' => null,
+        'turkeyIys' => null
     ];
 
     /**
@@ -95,7 +98,8 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      * @var string[]
      */
     protected static $attributeMap = [
-        'indiaDlt' => 'indiaDlt'
+        'indiaDlt' => 'indiaDlt',
+        'turkeyIys' => 'turkeyIys'
     ];
 
     /**
@@ -104,7 +108,8 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      * @var string[]
      */
     protected static $setters = [
-        'indiaDlt' => 'setIndiaDlt'
+        'indiaDlt' => 'setIndiaDlt',
+        'turkeyIys' => 'setTurkeyIys'
     ];
 
     /**
@@ -113,7 +118,8 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      * @var string[]
      */
     protected static $getters = [
-        'indiaDlt' => 'getIndiaDlt'
+        'indiaDlt' => 'getIndiaDlt',
+        'turkeyIys' => 'getTurkeyIys'
     ];
 
     /**
@@ -157,9 +163,9 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -177,6 +183,7 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
     public function __construct(array $data = null)
     {
         $this->container['indiaDlt'] = $data['indiaDlt'] ?? null;
+        $this->container['turkeyIys'] = $data['turkeyIys'] ?? null;
     }
 
     /**
@@ -216,13 +223,37 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
     /**
      * Sets indiaDlt
      *
-     * @param \Infobip\Model\SmsIndiaDltOptions|null $indiaDlt Distributed Ledger Technology (DLT) specific parameters required for sending SMS to phone numbers registered in India.
+     * @param \Infobip\Model\SmsIndiaDltOptions|null $indiaDlt indiaDlt
      *
      * @return self
      */
     public function setIndiaDlt($indiaDlt)
     {
         $this->container['indiaDlt'] = $indiaDlt;
+
+        return $this;
+    }
+
+    /**
+     * Gets turkeyIys
+     *
+     * @return \Infobip\Model\SmsTurkeyIysOptions|null
+     */
+    public function getTurkeyIys()
+    {
+        return $this->container['turkeyIys'];
+    }
+
+    /**
+     * Sets turkeyIys
+     *
+     * @param \Infobip\Model\SmsTurkeyIysOptions|null $turkeyIys turkeyIys
+     *
+     * @return self
+     */
+    public function setTurkeyIys($turkeyIys)
+    {
+        $this->container['turkeyIys'] = $turkeyIys;
 
         return $this;
     }
@@ -233,7 +264,7 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -245,7 +276,7 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -258,7 +289,7 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -274,7 +305,7 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -286,7 +317,7 @@ class SmsRegionalOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

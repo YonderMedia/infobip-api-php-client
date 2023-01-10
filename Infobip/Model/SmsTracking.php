@@ -23,13 +23,14 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsTracking Class Doc Comment
  *
  * @category Class
+ * @description Sets up tracking parameters to track conversion metrics and type.
  * @package  Infobip
  * @author   Infobip Support
  * @link     https://www.infobip.com
@@ -172,9 +173,9 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -234,7 +235,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets baseUrl
      *
-     * @param string|null $baseUrl Custom base url used for shortening links from SMS text in `URL` Conversion rate tracking use-case.
+     * @param string|null $baseUrl Custom base URL for shortened links in messages when tracking URL conversions.
      *
      * @return self
      */
@@ -258,7 +259,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets processKey
      *
-     * @param string|null $processKey Key that uniquely identifies Conversion tracking process.
+     * @param string|null $processKey The process key which uniquely identifies conversion tracking.
      *
      * @return self
      */
@@ -282,7 +283,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets track
      *
-     * @param string|null $track Indicates if the message has to be tracked for Conversion rates. Possible values: `SMS` and `URL`
+     * @param string|null $track Indicates if a message has to be tracked for conversion rates. Values are: `SMS` and `URL`.
      *
      * @return self
      */
@@ -306,7 +307,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets type
      *
-     * @param string|null $type User-defined type of the Conversion tracking process or flow type or message type, etc. Example: `ONE_TIME_PIN or SOCIAL_INVITES`.
+     * @param string|null $type Sets a custom conversion type naming convention, e.g. `ONE_TIME_PIN` or `SOCIAL_INVITES`.
      *
      * @return self
      */
@@ -323,7 +324,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -335,7 +336,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -348,7 +349,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -364,7 +365,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -376,7 +377,7 @@ class SmsTracking implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

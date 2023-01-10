@@ -23,13 +23,14 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsBinaryMessage Class Doc Comment
  *
  * @category Class
+ * @description An array of message objects of a single message or multiple messages sent under one bulk ID.
  * @package  Infobip
  * @author   Infobip Support
  * @link     https://www.infobip.com
@@ -212,9 +213,9 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -254,6 +255,17 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $invalidProperties = [];
 
+        if (!is_null($this->container['callbackData']) && (mb_strlen($this->container['callbackData']) > 4000)) {
+            $invalidProperties[] = "invalid value for 'callbackData', the character length must be smaller than or equal to 4000.";
+        }
+
+        if (!is_null($this->container['callbackData']) && (mb_strlen($this->container['callbackData']) < 0)) {
+            $invalidProperties[] = "invalid value for 'callbackData', the character length must be bigger than or equal to 0.";
+        }
+
+        if ($this->container['destinations'] === null) {
+            $invalidProperties[] = "'destinations' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -306,12 +318,19 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets callbackData
      *
-     * @param string|null $callbackData Additional client's data that will be sent on the notifyUrl. The maximum value is 200 characters.
+     * @param string|null $callbackData Additional client data that will be sent on the notifyUrl. The maximum value is 4000 characters.
      *
      * @return self
      */
     public function setCallbackData($callbackData)
     {
+        if (!is_null($callbackData) && (mb_strlen($callbackData) > 4000)) {
+            throw new \InvalidArgumentException('invalid length for $callbackData when calling SmsBinaryMessage., must be smaller than or equal to 4000.');
+        }
+        if (!is_null($callbackData) && (mb_strlen($callbackData) < 0)) {
+            throw new \InvalidArgumentException('invalid length for $callbackData when calling SmsBinaryMessage., must be bigger than or equal to 0.');
+        }
+
         $this->container['callbackData'] = $callbackData;
 
         return $this;
@@ -330,7 +349,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets deliveryTimeWindow
      *
-     * @param \Infobip\Model\SmsDeliveryTimeWindow|null $deliveryTimeWindow Scheduling object that allows setting up detailed time windows in which the message can be sent. Consists of `from`, `to` and `days` properties. `Days` property is mandatory. `From` and `to` properties should be either both included, to allow finer time window granulation or both omitted, to include whole days in the delivery time window.
+     * @param \Infobip\Model\SmsDeliveryTimeWindow|null $deliveryTimeWindow deliveryTimeWindow
      *
      * @return self
      */
@@ -344,7 +363,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets destinations
      *
-     * @return \Infobip\Model\SmsDestination[]|null
+     * @return \Infobip\Model\SmsDestination[]
      */
     public function getDestinations()
     {
@@ -354,7 +373,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets destinations
      *
-     * @param \Infobip\Model\SmsDestination[]|null $destinations destinations
+     * @param \Infobip\Model\SmsDestination[] $destinations An array of destination objects for where messages are being sent. A valid destination is required.
      *
      * @return self
      */
@@ -378,7 +397,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets flash
      *
-     * @param bool|null $flash Can be `true` or `false`. If the value is set to `true`, a flash SMS will be sent. Otherwise, a normal SMS will be sent. The default value is `false`.
+     * @param bool|null $flash Allows for sending a [flash SMS](https://www.infobip.com/docs/sms/message-types#flash-sms) to automatically appear on recipient devices without interaction. Set to `true` to enable flash SMS, or leave the default value, `false` to send a standard SMS.
      *
      * @return self
      */
@@ -402,7 +421,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets from
      *
-     * @param string|null $from Represents a sender ID which can be alphanumeric or numeric. Alphanumeric sender ID length should be between 3 and 11 characters (Example: `CompanyName`). Numeric sender ID length should be between 3 and 14 characters.
+     * @param string|null $from The sender ID which can be alphanumeric or numeric (e.g., `CompanyName`). Make sure you don't exceed [character limit](https://www.infobip.com/docs/sms/get-started#sender-names).
      *
      * @return self
      */
@@ -426,7 +445,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets intermediateReport
      *
-     * @param bool|null $intermediateReport The real-time Intermediate delivery report that will be sent on your callback server. Can be `true` or `false`.
+     * @param bool|null $intermediateReport The [real-time intermediate delivery report](https://www.infobip.com/docs/api#channels/sms/receive-outbound-sms-message-report) containing GSM error codes, messages status, pricing, network and country codes, etc., which will be sent on your callback server. Defaults to `false`.
      *
      * @return self
      */
@@ -450,7 +469,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets notifyContentType
      *
-     * @param string|null $notifyContentType Preferred Delivery report content type. Can be `application/json` or `application/xml`.
+     * @param string|null $notifyContentType Preferred delivery report content type, `application/json` or `application/xml`.
      *
      * @return self
      */
@@ -498,7 +517,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets regional
      *
-     * @param \Infobip\Model\SmsRegionalOptions|null $regional Region specific parameters, often specified by local laws. Use this if country or region that you are sending SMS to requires some extra parameters.
+     * @param \Infobip\Model\SmsRegionalOptions|null $regional regional
      *
      * @return self
      */
@@ -522,7 +541,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets sendAt
      *
-     * @param \DateTime|null $sendAt Date and time when the message is to be sent. Used for scheduled SMS (SMS not sent immediately, but at the scheduled time). Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+     * @param \DateTime|null $sendAt Date and time when the message is to be sent. Used for [scheduled SMS](https://www.infobip.com/docs/api#channels/sms/get-scheduled-sms-messages). Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`, and can only be scheduled for no later than 180 days in advance.
      *
      * @return self
      */
@@ -563,7 +582,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -575,7 +594,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -588,7 +607,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -604,7 +623,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -616,7 +635,7 @@ class SmsBinaryMessage implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

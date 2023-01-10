@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsPreviewRequest Class Doc Comment
@@ -167,9 +167,9 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -239,7 +239,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets languageCode
      *
-     * @param string|null $languageCode Code for language character set of a message text. Possible values: `TR` for Turkish, `ES` for Spanish, `PT` for Portuguese and `AUTODETECT` to let platform pick character set automatically based on the message text.
+     * @param string|null $languageCode Language code for the correct character set. Possible values: `TR` for Turkish, `ES` for Spanish, `PT` for Portuguese, or `AUTODETECT` to let platform select the character set based on message content.
      *
      * @return self
      */
@@ -267,7 +267,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets text
      *
-     * @param string $text Message text to preview.
+     * @param string $text Content of the message being sent.
      *
      * @return self
      */
@@ -291,7 +291,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets transliteration
      *
-     * @param string|null $transliteration Conversion of a message text from one script to another. Possible values: `TURKISH`, `GREEK`, `CYRILLIC`, `SERBIAN_CYRILLIC`, `CENTRAL_EUROPEAN`, `BALTIC` and `NON_UNICODE`.
+     * @param string|null $transliteration The transliteration of your sent message from one script to another. Transliteration is used to replace characters which are not recognized as part of your defaulted alphabet. Possible values: `TURKISH`, `GREEK`, `CYRILLIC`, `SERBIAN_CYRILLIC`, `CENTRAL_EUROPEAN`, `BALTIC` and `NON_UNICODE`.
      *
      * @return self
      */
@@ -312,7 +312,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -324,7 +324,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -337,7 +337,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -353,7 +353,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -365,7 +365,7 @@ class SmsPreviewRequest implements ModelInterface, ArrayAccess, \JsonSerializabl
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

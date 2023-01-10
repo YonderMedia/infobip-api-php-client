@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * TfaIndiaDltOptions Class Doc Comment
@@ -162,9 +162,9 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -241,7 +241,7 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
     /**
      * Sets contentTemplateId
      *
-     * @param string|null $contentTemplateId Id of your registered DTL content template that matches this message's text.
+     * @param string|null $contentTemplateId Registered DLT content template ID which matches message you are sending.
      *
      * @return self
      */
@@ -272,7 +272,7 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
     /**
      * Sets principalEntityId
      *
-     * @param string $principalEntityId Your assigned DTL principal entity id.
+     * @param string $principalEntityId Your assigned DLT principal entity ID.
      *
      * @return self
      */
@@ -296,7 +296,7 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -308,7 +308,7 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -321,7 +321,7 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -337,7 +337,7 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -349,7 +349,7 @@ class TfaIndiaDltOptions implements ModelInterface, ArrayAccess, \JsonSerializab
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

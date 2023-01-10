@@ -23,13 +23,14 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsSendingSpeedLimit Class Doc Comment
  *
  * @category Class
+ * @description Limits the send speed when sending messages in bulk to deliver messages over a longer period of time. You may wish to use this to allow your systems or agents to handle large amounts of incoming traffic, e.g., if you are expecting recipients to follow through with a call-to-action option from a message you sent. Not setting a send speed limit can overwhelm your resources with incoming traffic.
  * @package  Infobip
  * @author   Infobip Support
  * @link     https://www.infobip.com
@@ -162,9 +163,9 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -225,7 +226,7 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
     /**
      * Sets amount
      *
-     * @param int $amount The number of messages to send per time unit. By default, Infobip sends your messages as fast as the infrastructure allows. Use this parameter to reduce the traffic if you find the default sending speed too fast for your use case. Note that boosting this parameter will not result in faster sending speeds beyond infrastructure capabilities.
+     * @param int $amount The number of messages to be sent per timeUnit. By default, the system sends messages as fast as the infrastructure allows. Use this parameter to adapt sending capacity to your needs. The system is only able to work against its maximum capacity for ambitious message batches.
      *
      * @return self
      */
@@ -249,7 +250,7 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
     /**
      * Sets timeUnit
      *
-     * @param \Infobip\Model\SmsSpeedLimitTimeUnit|null $timeUnit The time unit in which the defined message amount will be sent. The default value is `MINUTE`.
+     * @param \Infobip\Model\SmsSpeedLimitTimeUnit|null $timeUnit timeUnit
      *
      * @return self
      */
@@ -266,7 +267,7 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -278,7 +279,7 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -291,7 +292,7 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -307,7 +308,7 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -319,7 +320,7 @@ class SmsSendingSpeedLimit implements ModelInterface, ArrayAccess, \JsonSerializ
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsLog Class Doc Comment
@@ -212,9 +212,9 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -282,7 +282,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets bulkId
      *
-     * @param string|null $bulkId The ID that uniquely identifies the request.
+     * @param string|null $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request.
      *
      * @return self
      */
@@ -306,7 +306,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets doneAt
      *
-     * @param \DateTime|null $doneAt Tells when the SMS was finished processing by Infobip (i.e. delivered to the destination, delivered to the destination network, etc.). Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+     * @param \DateTime|null $doneAt Date and time when the Infobip services finished processing the message (i.e. delivered to the destination, delivered to the destination network, etc.). Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
      *
      * @return self
      */
@@ -402,7 +402,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets messageId
      *
-     * @param string|null $messageId The ID that uniquely identifies the message sent.
+     * @param string|null $messageId Unique message ID.
      *
      * @return self
      */
@@ -450,7 +450,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets sentAt
      *
-     * @param \DateTime|null $sentAt Tells when the SMS was sent. Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+     * @param \DateTime|null $sentAt Date and time when the message was [scheduled](https://www.infobip.com/docs/api#channels/sms/get-scheduled-sms-messages) to be sent. Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
      *
      * @return self
      */
@@ -474,7 +474,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets smsCount
      *
-     * @param int|null $smsCount The number of sent message segments.
+     * @param int|null $smsCount The number of parts the message content was split into.
      *
      * @return self
      */
@@ -522,7 +522,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets text
      *
-     * @param string|null $text Text of the message that was sent.
+     * @param string|null $text Content of the message being sent.
      *
      * @return self
      */
@@ -546,7 +546,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets to
      *
-     * @param string|null $to The message destination address.
+     * @param string|null $to The destination address of the message.
      *
      * @return self
      */
@@ -563,7 +563,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -575,7 +575,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -588,7 +588,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -604,7 +604,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -616,7 +616,7 @@ class SmsLog implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

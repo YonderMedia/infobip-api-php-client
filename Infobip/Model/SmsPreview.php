@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsPreview Class Doc Comment
@@ -172,9 +172,9 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -234,7 +234,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets charactersRemaining
      *
-     * @param int|null $charactersRemaining Number of remaining characters in the last SMS part.
+     * @param int|null $charactersRemaining Number of remaining characters in the last part of the SMS.
      *
      * @return self
      */
@@ -258,7 +258,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets configuration
      *
-     * @param \Infobip\Model\SmsLanguageConfiguration|null $configuration Configuration that, when sent with the original text, results in this preview.
+     * @param \Infobip\Model\SmsLanguageConfiguration|null $configuration Sets up additional configuration that changes the original message content you can preview with this call.
      *
      * @return self
      */
@@ -306,7 +306,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets textPreview
      *
-     * @param string|null $textPreview Preview of the text as it should appear on the recipient’s device.
+     * @param string|null $textPreview Preview of the message content as it should appear on the recipient’s device.
      *
      * @return self
      */
@@ -323,7 +323,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -335,7 +335,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -348,7 +348,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -364,7 +364,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -376,7 +376,7 @@ class SmsPreview implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

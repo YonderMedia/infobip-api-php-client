@@ -27,6 +27,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\RequestOptions;
 use Infobip\ApiException;
 use Infobip\Configuration;
@@ -86,7 +87,7 @@ class ReceiveSmsApi
      *
      * Get inbound SMS messages
      *
-     * @param  int $limit Maximal number of received messages that will be returned. (optional)
+     * @param  int $limit Maximum number of messages to be returned in a response. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access messages for the last 48h. (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -103,7 +104,7 @@ class ReceiveSmsApi
      *
      * Get inbound SMS messages
      *
-     * @param  int $limit Maximal number of received messages that will be returned. (optional)
+     * @param  int $limit Maximum number of messages to be returned in a response. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access messages for the last 48h. (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -136,7 +137,7 @@ class ReceiveSmsApi
      *
      * Get inbound SMS messages
      *
-     * @param  int $limit Maximal number of received messages that will be returned. (optional)
+     * @param  int $limit Maximum number of messages to be returned in a response. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access messages for the last 48h. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -156,7 +157,7 @@ class ReceiveSmsApi
      *
      * Get inbound SMS messages
      *
-     * @param  int $limit Maximal number of received messages that will be returned. (optional)
+     * @param  int $limit Maximum number of messages to be returned in a response. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access messages for the last 48h. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -188,7 +189,7 @@ class ReceiveSmsApi
     /**
      * Create request for operation 'getInboundSmsMessages'
      *
-     * @param  int $limit Maximal number of received messages that will be returned. (optional)
+     * @param  int $limit Maximum number of messages to be returned in a response. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access messages for the last 48h. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -200,7 +201,6 @@ class ReceiveSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // query params
         if ($limit !== null) {
@@ -210,20 +210,16 @@ class ReceiveSmsApi
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                []
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            []
+        );
 
         // for model (json/xml)
         if (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -235,7 +231,7 @@ class ReceiveSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {

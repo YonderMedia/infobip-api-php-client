@@ -23,13 +23,14 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsDestination Class Doc Comment
  *
  * @category Class
+ * @description An array of destination objects for where messages are being sent. A valid destination is required.
  * @package  Infobip
  * @author   Infobip Support
  * @link     https://www.infobip.com
@@ -162,9 +163,9 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -197,6 +198,14 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
         if ($this->container['to'] === null) {
             $invalidProperties[] = "'to' can't be null";
         }
+        if ((mb_strlen($this->container['to']) > 50)) {
+            $invalidProperties[] = "invalid value for 'to', the character length must be smaller than or equal to 50.";
+        }
+
+        if ((mb_strlen($this->container['to']) < 0)) {
+            $invalidProperties[] = "invalid value for 'to', the character length must be bigger than or equal to 0.";
+        }
+
         return $invalidProperties;
     }
 
@@ -255,6 +264,13 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function setTo($to)
     {
+        if ((mb_strlen($to) > 50)) {
+            throw new \InvalidArgumentException('invalid length for $to when calling SmsDestination., must be smaller than or equal to 50.');
+        }
+        if ((mb_strlen($to) < 0)) {
+            throw new \InvalidArgumentException('invalid length for $to when calling SmsDestination., must be bigger than or equal to 0.');
+        }
+
         $this->container['to'] = $to;
 
         return $this;
@@ -266,7 +282,7 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -278,7 +294,7 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -291,7 +307,7 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -307,7 +323,7 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -319,7 +335,7 @@ class SmsDestination implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

@@ -27,6 +27,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\RequestOptions;
 use Infobip\ApiException;
 use Infobip\Configuration;
@@ -86,9 +87,9 @@ class SendSmsApi
      *
      * Get outbound SMS message delivery reports
      *
-     * @param  string $bulkId ID of bulk which delivery report is requested. (optional)
-     * @param  string $messageId ID of SMS which delivery report is requested. (optional)
-     * @param  int $limit Maximal number of delivery reports that will be returned. (optional)
+     * @param  string $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string $messageId Unique message ID for which a report is requested. (optional)
+     * @param  int $limit Maximum number of delivery reports to be returned. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access reports for the last 48h. (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -105,9 +106,9 @@ class SendSmsApi
      *
      * Get outbound SMS message delivery reports
      *
-     * @param  string $bulkId ID of bulk which delivery report is requested. (optional)
-     * @param  string $messageId ID of SMS which delivery report is requested. (optional)
-     * @param  int $limit Maximal number of delivery reports that will be returned. (optional)
+     * @param  string $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string $messageId Unique message ID for which a report is requested. (optional)
+     * @param  int $limit Maximum number of delivery reports to be returned. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access reports for the last 48h. (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -140,9 +141,9 @@ class SendSmsApi
      *
      * Get outbound SMS message delivery reports
      *
-     * @param  string $bulkId ID of bulk which delivery report is requested. (optional)
-     * @param  string $messageId ID of SMS which delivery report is requested. (optional)
-     * @param  int $limit Maximal number of delivery reports that will be returned. (optional)
+     * @param  string $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string $messageId Unique message ID for which a report is requested. (optional)
+     * @param  int $limit Maximum number of delivery reports to be returned. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access reports for the last 48h. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -162,9 +163,9 @@ class SendSmsApi
      *
      * Get outbound SMS message delivery reports
      *
-     * @param  string $bulkId ID of bulk which delivery report is requested. (optional)
-     * @param  string $messageId ID of SMS which delivery report is requested. (optional)
-     * @param  int $limit Maximal number of delivery reports that will be returned. (optional)
+     * @param  string $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string $messageId Unique message ID for which a report is requested. (optional)
+     * @param  int $limit Maximum number of delivery reports to be returned. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access reports for the last 48h. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -196,9 +197,9 @@ class SendSmsApi
     /**
      * Create request for operation 'getOutboundSmsMessageDeliveryReports'
      *
-     * @param  string $bulkId ID of bulk which delivery report is requested. (optional)
-     * @param  string $messageId ID of SMS which delivery report is requested. (optional)
-     * @param  int $limit Maximal number of delivery reports that will be returned. (optional)
+     * @param  string $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string $messageId Unique message ID for which a report is requested. (optional)
+     * @param  int $limit Maximum number of delivery reports to be returned. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access reports for the last 48h. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -210,7 +211,6 @@ class SendSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // query params
         if ($bulkId !== null) {
@@ -228,20 +228,16 @@ class SendSmsApi
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                []
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            []
+        );
 
         // for model (json/xml)
         if (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -253,7 +249,7 @@ class SendSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -387,16 +383,16 @@ class SendSmsApi
      *
      * Get outbound SMS message logs
      *
-     * @param  string $from Sender address. (optional)
-     * @param  string $to Destination address. (optional)
-     * @param  string[] $bulkId Bulk ID for which log is requested. (optional)
-     * @param  string[] $messageId SMS ID for which log is requested. (optional)
-     * @param  string $generalStatus Sent SMS status. (optional)
-     * @param  \DateTime $sentSince Lower limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  \DateTime $sentUntil Upper limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  int $limit Maximal number of messages in returned logs. Limit should be between &#x60;1&#x60; and &#x60;1000&#x60;. If you want to fetch more than 1000 logs you can retrieve them in pages using &#x60;sentSince&#x60; and &#x60;sentUntil&#x60; parameters. Defaults to &#x60;50&#x60;. (optional)
-     * @param  string $mcc Mobile country code. (optional)
-     * @param  string $mnc Mobile network code. (optional)
+     * @param  string $from The sender ID which can be alphanumeric or numeric. (optional)
+     * @param  string $to Message destination address. (optional)
+     * @param  string[] $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string[] $messageId Unique message ID for which a log is requested. (optional)
+     * @param  string $generalStatus Sent [message status](https://www.infobip.com/docs/essentials/response-status-and-error-codes#api-status-codes). Possible values: &#x60;ACCEPTED&#x60;, &#x60;PENDING&#x60;, &#x60;UNDELIVERABLE&#x60;, &#x60;DELIVERED&#x60;, &#x60;REJECTED&#x60;, &#x60;EXPIRED&#x60;. (optional)
+     * @param  \DateTime $sentSince The logs will only include messages sent after this date. Use it together with &#x60;sentUntil&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  \DateTime $sentUntil The logs will only include messages sent before this date. Use it together with &#x60;sentBefore&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  int $limit Maximum number of messages to include in logs. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access logs for the last 48h. If you want to fetch more than 1000 logs allowed per call, use &#x60;sentBefore&#x60; and &#x60;sentUntil&#x60; to retrieve them in pages. (optional)
+     * @param  string $mcc Mobile Country Code. (optional)
+     * @param  string $mnc Mobile Network Code. (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -413,16 +409,16 @@ class SendSmsApi
      *
      * Get outbound SMS message logs
      *
-     * @param  string $from Sender address. (optional)
-     * @param  string $to Destination address. (optional)
-     * @param  string[] $bulkId Bulk ID for which log is requested. (optional)
-     * @param  string[] $messageId SMS ID for which log is requested. (optional)
-     * @param  string $generalStatus Sent SMS status. (optional)
-     * @param  \DateTime $sentSince Lower limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  \DateTime $sentUntil Upper limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  int $limit Maximal number of messages in returned logs. Limit should be between &#x60;1&#x60; and &#x60;1000&#x60;. If you want to fetch more than 1000 logs you can retrieve them in pages using &#x60;sentSince&#x60; and &#x60;sentUntil&#x60; parameters. Defaults to &#x60;50&#x60;. (optional)
-     * @param  string $mcc Mobile country code. (optional)
-     * @param  string $mnc Mobile network code. (optional)
+     * @param  string $from The sender ID which can be alphanumeric or numeric. (optional)
+     * @param  string $to Message destination address. (optional)
+     * @param  string[] $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string[] $messageId Unique message ID for which a log is requested. (optional)
+     * @param  string $generalStatus Sent [message status](https://www.infobip.com/docs/essentials/response-status-and-error-codes#api-status-codes). Possible values: &#x60;ACCEPTED&#x60;, &#x60;PENDING&#x60;, &#x60;UNDELIVERABLE&#x60;, &#x60;DELIVERED&#x60;, &#x60;REJECTED&#x60;, &#x60;EXPIRED&#x60;. (optional)
+     * @param  \DateTime $sentSince The logs will only include messages sent after this date. Use it together with &#x60;sentUntil&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  \DateTime $sentUntil The logs will only include messages sent before this date. Use it together with &#x60;sentBefore&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  int $limit Maximum number of messages to include in logs. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access logs for the last 48h. If you want to fetch more than 1000 logs allowed per call, use &#x60;sentBefore&#x60; and &#x60;sentUntil&#x60; to retrieve them in pages. (optional)
+     * @param  string $mcc Mobile Country Code. (optional)
+     * @param  string $mnc Mobile Network Code. (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -455,16 +451,16 @@ class SendSmsApi
      *
      * Get outbound SMS message logs
      *
-     * @param  string $from Sender address. (optional)
-     * @param  string $to Destination address. (optional)
-     * @param  string[] $bulkId Bulk ID for which log is requested. (optional)
-     * @param  string[] $messageId SMS ID for which log is requested. (optional)
-     * @param  string $generalStatus Sent SMS status. (optional)
-     * @param  \DateTime $sentSince Lower limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  \DateTime $sentUntil Upper limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  int $limit Maximal number of messages in returned logs. Limit should be between &#x60;1&#x60; and &#x60;1000&#x60;. If you want to fetch more than 1000 logs you can retrieve them in pages using &#x60;sentSince&#x60; and &#x60;sentUntil&#x60; parameters. Defaults to &#x60;50&#x60;. (optional)
-     * @param  string $mcc Mobile country code. (optional)
-     * @param  string $mnc Mobile network code. (optional)
+     * @param  string $from The sender ID which can be alphanumeric or numeric. (optional)
+     * @param  string $to Message destination address. (optional)
+     * @param  string[] $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string[] $messageId Unique message ID for which a log is requested. (optional)
+     * @param  string $generalStatus Sent [message status](https://www.infobip.com/docs/essentials/response-status-and-error-codes#api-status-codes). Possible values: &#x60;ACCEPTED&#x60;, &#x60;PENDING&#x60;, &#x60;UNDELIVERABLE&#x60;, &#x60;DELIVERED&#x60;, &#x60;REJECTED&#x60;, &#x60;EXPIRED&#x60;. (optional)
+     * @param  \DateTime $sentSince The logs will only include messages sent after this date. Use it together with &#x60;sentUntil&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  \DateTime $sentUntil The logs will only include messages sent before this date. Use it together with &#x60;sentBefore&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  int $limit Maximum number of messages to include in logs. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access logs for the last 48h. If you want to fetch more than 1000 logs allowed per call, use &#x60;sentBefore&#x60; and &#x60;sentUntil&#x60; to retrieve them in pages. (optional)
+     * @param  string $mcc Mobile Country Code. (optional)
+     * @param  string $mnc Mobile Network Code. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -484,16 +480,16 @@ class SendSmsApi
      *
      * Get outbound SMS message logs
      *
-     * @param  string $from Sender address. (optional)
-     * @param  string $to Destination address. (optional)
-     * @param  string[] $bulkId Bulk ID for which log is requested. (optional)
-     * @param  string[] $messageId SMS ID for which log is requested. (optional)
-     * @param  string $generalStatus Sent SMS status. (optional)
-     * @param  \DateTime $sentSince Lower limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  \DateTime $sentUntil Upper limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  int $limit Maximal number of messages in returned logs. Limit should be between &#x60;1&#x60; and &#x60;1000&#x60;. If you want to fetch more than 1000 logs you can retrieve them in pages using &#x60;sentSince&#x60; and &#x60;sentUntil&#x60; parameters. Defaults to &#x60;50&#x60;. (optional)
-     * @param  string $mcc Mobile country code. (optional)
-     * @param  string $mnc Mobile network code. (optional)
+     * @param  string $from The sender ID which can be alphanumeric or numeric. (optional)
+     * @param  string $to Message destination address. (optional)
+     * @param  string[] $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string[] $messageId Unique message ID for which a log is requested. (optional)
+     * @param  string $generalStatus Sent [message status](https://www.infobip.com/docs/essentials/response-status-and-error-codes#api-status-codes). Possible values: &#x60;ACCEPTED&#x60;, &#x60;PENDING&#x60;, &#x60;UNDELIVERABLE&#x60;, &#x60;DELIVERED&#x60;, &#x60;REJECTED&#x60;, &#x60;EXPIRED&#x60;. (optional)
+     * @param  \DateTime $sentSince The logs will only include messages sent after this date. Use it together with &#x60;sentUntil&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  \DateTime $sentUntil The logs will only include messages sent before this date. Use it together with &#x60;sentBefore&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  int $limit Maximum number of messages to include in logs. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access logs for the last 48h. If you want to fetch more than 1000 logs allowed per call, use &#x60;sentBefore&#x60; and &#x60;sentUntil&#x60; to retrieve them in pages. (optional)
+     * @param  string $mcc Mobile Country Code. (optional)
+     * @param  string $mnc Mobile Network Code. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -525,16 +521,16 @@ class SendSmsApi
     /**
      * Create request for operation 'getOutboundSmsMessageLogs'
      *
-     * @param  string $from Sender address. (optional)
-     * @param  string $to Destination address. (optional)
-     * @param  string[] $bulkId Bulk ID for which log is requested. (optional)
-     * @param  string[] $messageId SMS ID for which log is requested. (optional)
-     * @param  string $generalStatus Sent SMS status. (optional)
-     * @param  \DateTime $sentSince Lower limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  \DateTime $sentUntil Upper limit on date and time of sending SMS. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
-     * @param  int $limit Maximal number of messages in returned logs. Limit should be between &#x60;1&#x60; and &#x60;1000&#x60;. If you want to fetch more than 1000 logs you can retrieve them in pages using &#x60;sentSince&#x60; and &#x60;sentUntil&#x60; parameters. Defaults to &#x60;50&#x60;. (optional)
-     * @param  string $mcc Mobile country code. (optional)
-     * @param  string $mnc Mobile network code. (optional)
+     * @param  string $from The sender ID which can be alphanumeric or numeric. (optional)
+     * @param  string $to Message destination address. (optional)
+     * @param  string[] $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. (optional)
+     * @param  string[] $messageId Unique message ID for which a log is requested. (optional)
+     * @param  string $generalStatus Sent [message status](https://www.infobip.com/docs/essentials/response-status-and-error-codes#api-status-codes). Possible values: &#x60;ACCEPTED&#x60;, &#x60;PENDING&#x60;, &#x60;UNDELIVERABLE&#x60;, &#x60;DELIVERED&#x60;, &#x60;REJECTED&#x60;, &#x60;EXPIRED&#x60;. (optional)
+     * @param  \DateTime $sentSince The logs will only include messages sent after this date. Use it together with &#x60;sentUntil&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  \DateTime $sentUntil The logs will only include messages sent before this date. Use it together with &#x60;sentBefore&#x60; to return a time range or if you want to fetch more than 1000 logs allowed per call. Has the following format: &#x60;yyyy-MM-dd&#39;T&#39;HH:mm:ss.SSSZ&#x60;. (optional)
+     * @param  int $limit Maximum number of messages to include in logs. If not set, the latest 50 records are returned. Maximum limit value is &#x60;1000&#x60; and you can only access logs for the last 48h. If you want to fetch more than 1000 logs allowed per call, use &#x60;sentBefore&#x60; and &#x60;sentUntil&#x60; to retrieve them in pages. (optional)
+     * @param  string $mcc Mobile Country Code. (optional)
+     * @param  string $mnc Mobile Network Code. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -546,7 +542,6 @@ class SendSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // query params
         if ($from !== null) {
@@ -592,20 +587,16 @@ class SendSmsApi
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                []
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            []
+        );
 
         // for model (json/xml)
         if (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -617,7 +608,7 @@ class SendSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -865,22 +856,15 @@ class SendSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
 
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                ['application/json', 'application/xml']
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            ['application/json', 'application/xml']
+        );
 
         // for model (json/xml)
         if (isset($smsPreviewRequest)) {
@@ -890,7 +874,9 @@ class SendSmsApi
                 $httpBody = $smsPreviewRequest;
             }
         } elseif (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -902,7 +888,7 @@ class SendSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -1036,13 +1022,13 @@ class SendSmsApi
      *
      * Send binary SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest smsAdvancedBinaryRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest smsAdvancedBinaryRequest (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|\Infobip\Model\SmsResponse
+     * @return \Infobip\Model\SmsResponse|\Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException
      */
-    public function sendBinarySmsMessage($smsAdvancedBinaryRequest = null)
+    public function sendBinarySmsMessage($smsAdvancedBinaryRequest)
     {
         list($response) = $this->sendBinarySmsMessageWithHttpInfo($smsAdvancedBinaryRequest);
         return $response;
@@ -1053,13 +1039,13 @@ class SendSmsApi
      *
      * Send binary SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|\Infobip\Model\SmsResponse, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Infobip\Model\SmsResponse|\Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException, HTTP status code, HTTP response headers (array of strings)
      */
-    public function sendBinarySmsMessageWithHttpInfo($smsAdvancedBinaryRequest = null)
+    public function sendBinarySmsMessageWithHttpInfo($smsAdvancedBinaryRequest)
     {
         $request = $this->sendBinarySmsMessageRequest($smsAdvancedBinaryRequest);
 
@@ -1086,12 +1072,12 @@ class SendSmsApi
      *
      * Send binary SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function sendBinarySmsMessageAsync($smsAdvancedBinaryRequest = null)
+    public function sendBinarySmsMessageAsync($smsAdvancedBinaryRequest)
     {
         return $this->sendBinarySmsMessageAsyncWithHttpInfo($smsAdvancedBinaryRequest)
             ->then(
@@ -1106,12 +1092,12 @@ class SendSmsApi
      *
      * Send binary SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function sendBinarySmsMessageAsyncWithHttpInfo($smsAdvancedBinaryRequest = null)
+    public function sendBinarySmsMessageAsyncWithHttpInfo($smsAdvancedBinaryRequest)
     {
         $request = $this->sendBinarySmsMessageRequest($smsAdvancedBinaryRequest);
 
@@ -1138,34 +1124,34 @@ class SendSmsApi
     /**
      * Create request for operation 'sendBinarySmsMessage'
      *
-     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedBinaryRequest $smsAdvancedBinaryRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function sendBinarySmsMessageRequest($smsAdvancedBinaryRequest = null)
+    protected function sendBinarySmsMessageRequest($smsAdvancedBinaryRequest)
     {
+        // verify the required parameter 'smsAdvancedBinaryRequest' is set
+        if ($smsAdvancedBinaryRequest === null || (is_array($smsAdvancedBinaryRequest) && count($smsAdvancedBinaryRequest) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $smsAdvancedBinaryRequest when calling sendBinarySmsMessage'
+            );
+        }
+
         $resourcePath = '/sms/2/binary/advanced';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
 
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                ['application/json', 'application/xml']
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            ['application/json', 'application/xml']
+        );
 
         // for model (json/xml)
         if (isset($smsAdvancedBinaryRequest)) {
@@ -1175,7 +1161,9 @@ class SendSmsApi
                 $httpBody = $smsAdvancedBinaryRequest;
             }
         } elseif (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -1187,7 +1175,7 @@ class SendSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -1242,7 +1230,7 @@ class SendSmsApi
      * @param string $requestUri
      *
      * @throws \Infobip\ApiException on non-2xx response
-     * @return array of \Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|\Infobip\Model\SmsResponse|null, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Infobip\Model\SmsResponse|\Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|null, HTTP status code, HTTP response headers (array of strings)
      */
     protected function sendBinarySmsMessageResponse($response, $requestUri)
     {
@@ -1261,14 +1249,21 @@ class SendSmsApi
 
         $responseObject = null;
 
+        if ($statusCode === 200) {
+            $type = '\Infobip\Model\SmsResponse';
+            if ($type === '\SplFileObject') {
+                $content = $responseBody; //stream goes to serializer
+            } else {
+                $content = (string) $responseBody;
+            }
+            $responseObject = ObjectSerializer::deserialize($content, $type, $responseHeaders);
 
-        $type = '\Infobip\Model\SmsResponse';
-        if ($type === '\SplFileObject') {
-            $content = $responseBody; //stream goes to serializer
-        } else {
-            $content = (string) $responseBody;
+            return [
+                $responseObject,
+                $statusCode,
+                $responseHeaders
+            ];
         }
-        $responseObject = ObjectSerializer::deserialize($content, $type, $responseHeaders);
 
         return [
             $responseObject,
@@ -1288,7 +1283,7 @@ class SendSmsApi
     {
         $statusCode = $apiException->getCode();
 
-        if ($statusCode >= 400 && $statusCode <= 499) {
+        if ($statusCode === 400) {
             $data = ObjectSerializer::deserialize(
                 $apiException->getResponseBody(),
                 '\Infobip\Model\SmsApiException',
@@ -1297,7 +1292,7 @@ class SendSmsApi
             $apiException->setResponseObject($data);
             return $apiException;
         }
-        if ($statusCode >= 500 && $statusCode <= 599) {
+        if ($statusCode === 500) {
             $data = ObjectSerializer::deserialize(
                 $apiException->getResponseBody(),
                 '\Infobip\Model\SmsApiException',
@@ -1306,13 +1301,6 @@ class SendSmsApi
             $apiException->setResponseObject($data);
             return $apiException;
         }
-
-        $data = ObjectSerializer::deserialize(
-            $apiException->getResponseBody(),
-            '\Infobip\Model\SmsResponse',
-            $apiException->getResponseHeaders()
-        );
-        $apiException->setResponseObject($data);
         return $apiException;
     }
 
@@ -1321,13 +1309,13 @@ class SendSmsApi
      *
      * Send SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest smsAdvancedTextualRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest smsAdvancedTextualRequest (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|\Infobip\Model\SmsResponse
+     * @return \Infobip\Model\SmsResponse|\Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException
      */
-    public function sendSmsMessage($smsAdvancedTextualRequest = null)
+    public function sendSmsMessage($smsAdvancedTextualRequest)
     {
         list($response) = $this->sendSmsMessageWithHttpInfo($smsAdvancedTextualRequest);
         return $response;
@@ -1338,13 +1326,13 @@ class SendSmsApi
      *
      * Send SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|\Infobip\Model\SmsResponse, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Infobip\Model\SmsResponse|\Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException, HTTP status code, HTTP response headers (array of strings)
      */
-    public function sendSmsMessageWithHttpInfo($smsAdvancedTextualRequest = null)
+    public function sendSmsMessageWithHttpInfo($smsAdvancedTextualRequest)
     {
         $request = $this->sendSmsMessageRequest($smsAdvancedTextualRequest);
 
@@ -1371,12 +1359,12 @@ class SendSmsApi
      *
      * Send SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function sendSmsMessageAsync($smsAdvancedTextualRequest = null)
+    public function sendSmsMessageAsync($smsAdvancedTextualRequest)
     {
         return $this->sendSmsMessageAsyncWithHttpInfo($smsAdvancedTextualRequest)
             ->then(
@@ -1391,12 +1379,12 @@ class SendSmsApi
      *
      * Send SMS message
      *
-     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function sendSmsMessageAsyncWithHttpInfo($smsAdvancedTextualRequest = null)
+    public function sendSmsMessageAsyncWithHttpInfo($smsAdvancedTextualRequest)
     {
         $request = $this->sendSmsMessageRequest($smsAdvancedTextualRequest);
 
@@ -1423,34 +1411,34 @@ class SendSmsApi
     /**
      * Create request for operation 'sendSmsMessage'
      *
-     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (optional)
+     * @param  \Infobip\Model\SmsAdvancedTextualRequest $smsAdvancedTextualRequest (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function sendSmsMessageRequest($smsAdvancedTextualRequest = null)
+    protected function sendSmsMessageRequest($smsAdvancedTextualRequest)
     {
+        // verify the required parameter 'smsAdvancedTextualRequest' is set
+        if ($smsAdvancedTextualRequest === null || (is_array($smsAdvancedTextualRequest) && count($smsAdvancedTextualRequest) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $smsAdvancedTextualRequest when calling sendSmsMessage'
+            );
+        }
+
         $resourcePath = '/sms/2/text/advanced';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
 
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                ['application/json', 'application/xml']
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            ['application/json', 'application/xml']
+        );
 
         // for model (json/xml)
         if (isset($smsAdvancedTextualRequest)) {
@@ -1460,7 +1448,9 @@ class SendSmsApi
                 $httpBody = $smsAdvancedTextualRequest;
             }
         } elseif (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -1472,7 +1462,7 @@ class SendSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -1527,7 +1517,7 @@ class SendSmsApi
      * @param string $requestUri
      *
      * @throws \Infobip\ApiException on non-2xx response
-     * @return array of \Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|\Infobip\Model\SmsResponse|null, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Infobip\Model\SmsResponse|\Infobip\Model\SmsApiException|\Infobip\Model\SmsApiException|null, HTTP status code, HTTP response headers (array of strings)
      */
     protected function sendSmsMessageResponse($response, $requestUri)
     {
@@ -1546,14 +1536,21 @@ class SendSmsApi
 
         $responseObject = null;
 
+        if ($statusCode === 200) {
+            $type = '\Infobip\Model\SmsResponse';
+            if ($type === '\SplFileObject') {
+                $content = $responseBody; //stream goes to serializer
+            } else {
+                $content = (string) $responseBody;
+            }
+            $responseObject = ObjectSerializer::deserialize($content, $type, $responseHeaders);
 
-        $type = '\Infobip\Model\SmsResponse';
-        if ($type === '\SplFileObject') {
-            $content = $responseBody; //stream goes to serializer
-        } else {
-            $content = (string) $responseBody;
+            return [
+                $responseObject,
+                $statusCode,
+                $responseHeaders
+            ];
         }
-        $responseObject = ObjectSerializer::deserialize($content, $type, $responseHeaders);
 
         return [
             $responseObject,
@@ -1573,7 +1570,7 @@ class SendSmsApi
     {
         $statusCode = $apiException->getCode();
 
-        if ($statusCode >= 400 && $statusCode <= 499) {
+        if ($statusCode === 400) {
             $data = ObjectSerializer::deserialize(
                 $apiException->getResponseBody(),
                 '\Infobip\Model\SmsApiException',
@@ -1582,7 +1579,7 @@ class SendSmsApi
             $apiException->setResponseObject($data);
             return $apiException;
         }
-        if ($statusCode >= 500 && $statusCode <= 599) {
+        if ($statusCode === 500) {
             $data = ObjectSerializer::deserialize(
                 $apiException->getResponseBody(),
                 '\Infobip\Model\SmsApiException',
@@ -1591,13 +1588,6 @@ class SendSmsApi
             $apiException->setResponseObject($data);
             return $apiException;
         }
-
-        $data = ObjectSerializer::deserialize(
-            $apiException->getResponseBody(),
-            '\Infobip\Model\SmsResponse',
-            $apiException->getResponseHeaders()
-        );
-        $apiException->setResponseObject($data);
         return $apiException;
     }
 

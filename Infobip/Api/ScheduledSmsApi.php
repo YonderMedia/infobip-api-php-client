@@ -27,6 +27,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Utils;
 use GuzzleHttp\RequestOptions;
 use Infobip\ApiException;
 use Infobip\Configuration;
@@ -86,7 +87,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages
      *
-     * @param  string $bulkId bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -103,7 +104,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -136,7 +137,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -156,7 +157,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -188,7 +189,7 @@ class ScheduledSmsApi
     /**
      * Create request for operation 'getScheduledSmsMessages'
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -207,7 +208,6 @@ class ScheduledSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // query params
         if ($bulkId !== null) {
@@ -217,20 +217,16 @@ class ScheduledSmsApi
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                []
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            []
+        );
 
         // for model (json/xml)
         if (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -242,7 +238,7 @@ class ScheduledSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -376,7 +372,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages status
      *
-     * @param  string $bulkId bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -393,7 +389,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages status
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \Infobip\ApiException on non-2xx response
      * @throws \InvalidArgumentException
@@ -426,7 +422,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages status
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -446,7 +442,7 @@ class ScheduledSmsApi
      *
      * Get scheduled SMS messages status
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -478,7 +474,7 @@ class ScheduledSmsApi
     /**
      * Create request for operation 'getScheduledSmsMessagesStatus'
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -497,7 +493,6 @@ class ScheduledSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // query params
         if ($bulkId !== null) {
@@ -507,20 +502,16 @@ class ScheduledSmsApi
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                []
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            []
+        );
 
         // for model (json/xml)
         if (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -532,7 +523,7 @@ class ScheduledSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -666,7 +657,7 @@ class ScheduledSmsApi
      *
      * Reschedule SMS messages
      *
-     * @param  string $bulkId bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsBulkRequest $smsBulkRequest smsBulkRequest (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
@@ -684,7 +675,7 @@ class ScheduledSmsApi
      *
      * Reschedule SMS messages
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsBulkRequest $smsBulkRequest (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
@@ -718,7 +709,7 @@ class ScheduledSmsApi
      *
      * Reschedule SMS messages
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsBulkRequest $smsBulkRequest (optional)
      *
      * @throws \InvalidArgumentException
@@ -739,7 +730,7 @@ class ScheduledSmsApi
      *
      * Reschedule SMS messages
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsBulkRequest $smsBulkRequest (optional)
      *
      * @throws \InvalidArgumentException
@@ -772,7 +763,7 @@ class ScheduledSmsApi
     /**
      * Create request for operation 'rescheduleSmsMessages'
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsBulkRequest $smsBulkRequest (optional)
      *
      * @throws \InvalidArgumentException
@@ -792,7 +783,6 @@ class ScheduledSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // query params
         if ($bulkId !== null) {
@@ -802,16 +792,10 @@ class ScheduledSmsApi
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                ['application/json', 'application/xml']
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            ['application/json', 'application/xml']
+        );
 
         // for model (json/xml)
         if (isset($smsBulkRequest)) {
@@ -821,7 +805,9 @@ class ScheduledSmsApi
                 $httpBody = $smsBulkRequest;
             }
         } elseif (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -833,7 +819,7 @@ class ScheduledSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {
@@ -967,7 +953,7 @@ class ScheduledSmsApi
      *
      * Update scheduled SMS messages status
      *
-     * @param  string $bulkId bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsUpdateStatusRequest $smsUpdateStatusRequest smsUpdateStatusRequest (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
@@ -985,7 +971,7 @@ class ScheduledSmsApi
      *
      * Update scheduled SMS messages status
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsUpdateStatusRequest $smsUpdateStatusRequest (optional)
      *
      * @throws \Infobip\ApiException on non-2xx response
@@ -1019,7 +1005,7 @@ class ScheduledSmsApi
      *
      * Update scheduled SMS messages status
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsUpdateStatusRequest $smsUpdateStatusRequest (optional)
      *
      * @throws \InvalidArgumentException
@@ -1040,7 +1026,7 @@ class ScheduledSmsApi
      *
      * Update scheduled SMS messages status
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsUpdateStatusRequest $smsUpdateStatusRequest (optional)
      *
      * @throws \InvalidArgumentException
@@ -1073,7 +1059,7 @@ class ScheduledSmsApi
     /**
      * Create request for operation 'updateScheduledSmsMessagesStatus'
      *
-     * @param  string $bulkId (required)
+     * @param  string $bulkId  (required)
      * @param  \Infobip\Model\SmsUpdateStatusRequest $smsUpdateStatusRequest (optional)
      *
      * @throws \InvalidArgumentException
@@ -1093,7 +1079,6 @@ class ScheduledSmsApi
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
-        $multipart = false;
 
         // query params
         if ($bulkId !== null) {
@@ -1103,16 +1088,10 @@ class ScheduledSmsApi
 
 
 
-        if ($multipart) {
-            $headers = $this->headerSelector->selectHeadersForMultipart(
-                ['application/json', 'application/xml']
-            );
-        } else {
-            $headers = $this->headerSelector->selectHeaders(
-                ['application/json', 'application/xml'],
-                ['application/json', 'application/xml']
-            );
-        }
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', 'application/xml'],
+            ['application/json', 'application/xml']
+        );
 
         // for model (json/xml)
         if (isset($smsUpdateStatusRequest)) {
@@ -1122,7 +1101,9 @@ class ScheduledSmsApi
                 $httpBody = $smsUpdateStatusRequest;
             }
         } elseif (count($formParams) > 0) {
-            if ($multipart) {
+            if ($headers['Content-Type'] === 'multipart/form-data') {
+                $boundary = '----'.hash('sha256', uniqid('', true));
+                $headers['Content-Type'] .= '; boundary=' . $boundary;
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
                     $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
@@ -1134,7 +1115,7 @@ class ScheduledSmsApi
                     }
                 }
                 // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
+                $httpBody = new MultipartStream($multipartContents, $boundary);
             } elseif ($headers['Content-Type'] === 'application/json') {
                 $httpBody = \GuzzleHttp\json_encode($formParams);
             } else {

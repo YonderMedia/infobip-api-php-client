@@ -23,13 +23,14 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsDeliveryTime Class Doc Comment
  *
  * @category Class
+ * @description The exact time of day to end sending messages. Time is expressed in the UTC time zone. If set, use it together with the &#x60;from&#x60; property with minimum 1 hour difference.
  * @package  Infobip
  * @author   Infobip Support
  * @link     https://www.infobip.com
@@ -162,9 +163,9 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -244,7 +245,7 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets hour
      *
-     * @param int $hour Hour when the time window opens when used in from property or closes when used into the property.
+     * @param int $hour Hour when the time window opens when used in the `from` property or closes when used in the `to` property.
      *
      * @return self
      */
@@ -275,7 +276,7 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets minute
      *
-     * @param int $minute Minute when the time window opens when used in from property or closes when used into the property.
+     * @param int $minute Minute when the time window opens when used in the `from` property or closes when used in the `to` property.
      *
      * @return self
      */
@@ -299,7 +300,7 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -311,7 +312,7 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -324,7 +325,7 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -340,7 +341,7 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -352,7 +353,7 @@ class SmsDeliveryTime implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

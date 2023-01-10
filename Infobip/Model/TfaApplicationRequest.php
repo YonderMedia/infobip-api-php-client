@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * TfaApplicationRequest Class Doc Comment
@@ -167,9 +167,9 @@ class TfaApplicationRequest implements ModelInterface, ArrayAccess, \JsonSeriali
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -255,7 +255,7 @@ class TfaApplicationRequest implements ModelInterface, ArrayAccess, \JsonSeriali
     /**
      * Sets enabled
      *
-     * @param bool|null $enabled Indicates if the created application is enabled.
+     * @param bool|null $enabled Indicates whether the created application is enabled.
      *
      * @return self
      */
@@ -296,7 +296,7 @@ class TfaApplicationRequest implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -308,7 +308,7 @@ class TfaApplicationRequest implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -321,7 +321,7 @@ class TfaApplicationRequest implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -337,7 +337,7 @@ class TfaApplicationRequest implements ModelInterface, ArrayAccess, \JsonSeriali
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -349,7 +349,7 @@ class TfaApplicationRequest implements ModelInterface, ArrayAccess, \JsonSeriali
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * TfaApplicationResponse Class Doc Comment
@@ -172,9 +172,9 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -234,7 +234,7 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets applicationId
      *
-     * @param string|null $applicationId 2FA application ID.
+     * @param string|null $applicationId The ID of the application that represents your service, e.g. 2FA for login, 2FA for changing the password, etc.
      *
      * @return self
      */
@@ -282,7 +282,7 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
     /**
      * Sets enabled
      *
-     * @param bool|null $enabled Indicates if the created application is enabled.
+     * @param bool|null $enabled Indicates whether the created application is enabled.
      *
      * @return self
      */
@@ -323,7 +323,7 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -335,7 +335,7 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -348,7 +348,7 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -364,7 +364,7 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -376,7 +376,7 @@ class TfaApplicationResponse implements ModelInterface, ArrayAccess, \JsonSerial
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

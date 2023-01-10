@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsAdvancedBinaryRequest Class Doc Comment
@@ -167,9 +167,9 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -231,7 +231,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets bulkId
      *
-     * @param string|null $bulkId The ID which uniquely identifies the request. Bulk ID will be received only when you send a message to more than one destination address.
+     * @param string|null $bulkId Unique ID assigned to the request if messaging multiple recipients or sending multiple messages via a single API request. If not provided, it will be auto-generated and returned in the API response. Typically, used to fetch [delivery reports](#channels/sms/get-outbound-sms-message-delivery-reports) and [message logs](#channels/sms/get-outbound-sms-message-logs).
      *
      * @return self
      */
@@ -255,7 +255,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets messages
      *
-     * @param \Infobip\Model\SmsBinaryMessage[] $messages messages
+     * @param \Infobip\Model\SmsBinaryMessage[] $messages An array of message objects of a single message or multiple messages sent under one bulk ID.
      *
      * @return self
      */
@@ -279,7 +279,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets sendingSpeedLimit
      *
-     * @param \Infobip\Model\SmsSendingSpeedLimit|null $sendingSpeedLimit Limit the sending speed for message bulks. In some use cases, you might want to reduce message sending speed if your message call to action involves visiting a website, calling your contact center or similar recipient activity, in which you can handle a limited amount of load. This setting helps you to spread the delivery of the messages over a longer period, allowing your systems or agents to handle incoming traffic in real-time, resulting in better customer satisfaction.
+     * @param \Infobip\Model\SmsSendingSpeedLimit|null $sendingSpeedLimit sendingSpeedLimit
      *
      * @return self
      */
@@ -296,7 +296,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -308,7 +308,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -321,7 +321,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -337,7 +337,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -349,7 +349,7 @@ class SmsAdvancedBinaryRequest implements ModelInterface, ArrayAccess, \JsonSeri
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

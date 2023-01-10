@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsInboundMessageResult Class Doc Comment
@@ -167,9 +167,9 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -228,7 +228,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets messageCount
      *
-     * @param int|null $messageCount messageCount
+     * @param int|null $messageCount The number of messages returned in the `results` array.
      *
      * @return self
      */
@@ -252,7 +252,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets pendingMessageCount
      *
-     * @param int|null $pendingMessageCount pendingMessageCount
+     * @param int|null $pendingMessageCount The number of messages that have not been pulled in.
      *
      * @return self
      */
@@ -276,7 +276,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
     /**
      * Sets results
      *
-     * @param \Infobip\Model\SmsInboundMessage[]|null $results results
+     * @param \Infobip\Model\SmsInboundMessage[]|null $results An array of result objects.
      *
      * @return self
      */
@@ -293,7 +293,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -305,7 +305,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -318,7 +318,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -334,7 +334,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -346,7 +346,7 @@ class SmsInboundMessageResult implements ModelInterface, ArrayAccess, \JsonSeria
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

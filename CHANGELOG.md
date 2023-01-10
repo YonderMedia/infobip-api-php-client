@@ -1,16 +1,52 @@
-# Change Log of `infobip-api-php-client`
+# Change Log
 
 All notable changes to the library will be documented in this file.
 
-The format of the file is based on [Keep a Changelog](http://keepachangelog.com/) and this library adheres to [Semantic Versioning](http://semver.org/) as mentioned in [README.md][readme] file.
+The format of the file is based on [Keep a Changelog](http://keepachangelog.com/) and this library adheres to [Semantic Versioning](http://semver.org/) as mentioned in the [README.md][readme] file.
 
-## [ [3.0.0](https://github.com/infobip/infobip-api-php-client/releases/tag/3.0.0) ] - 2021-03-23
-
-🎉 **NEW Major Version of `infobip-api-php-client`.**
+## [ [4.0.0](https://github.com/infobip/infobip-api-php-client/releases/tag/4.0.0) ] - 2022-10-21
 
 ⚠️ **IMPORTANT NOTE:** This release contains breaking changes!
 
-In this release, the infobip-api-php-client library is vastly changed and modernized. It is auto-generated and completely different from the previous version, so we do not provide an upgrade guide from 2.x to 3.x because such a document will be a similar size as the library itself.
+### Changed
+- The minimum supported PHP version has been changed to 8.0
+- Get WhatsApp template / Create WhatsApp template have breaking changes as they're using the new v2 API endpoints. The body and footer are no longer strings but objects.
+- **getEmailLogs**' input parameters **sentSince** and **sentUntil** now correctly defined as `DateTime` type
+
+### Added
+- Delete WhatsApp template
+
+### Fixed
+- [PHP 8 deprecation issues](https://github.com/infobip/infobip-api-php-client/issues/47)
+
+## [ [3.2.0](https://github.com/infobip/infobip-api-php-client/releases/tag/3.2.0) ] - 2022-03-29
+
+### Added
+- Support for [Infobip WhatsApp API](https://www.infobip.com/docs/api#channels/whatsapp)
+
+### Changed
+- Renamed **EmailLogResponse** to **EmailLogsResponse**
+- Added default value of **false** for parameter **flash** in **SmsTextualMessage**
+
+### Removed
+- Dev dependencies
+- Unused models
+
+## [ [3.1.0](https://github.com/infobip/infobip-api-php-client/releases/tag/3.1.0) ] - 2021-11-19
+
+### Added
+- Support for [Infobip Email API](https://www.infobip.com/docs/api#channels/email)
+
+### Changed
+- Update Guzzle HTTP client version from 6.5 to 7.3
+
+## [ [3.0.0](https://github.com/infobip/infobip-api-php-client/releases/tag/3.0.0) ] - 2021-03-23
+
+🎉 **NEW Major Version**
+
+⚠️ **IMPORTANT NOTE:** This release contains breaking changes!
+
+In this release, the library is vastly changed and modernized. It is auto-generated and completely different from the previous version, so we do not provide an upgrade guide from 2.x to 3.x because such a document will be a similar size as the library itself.
 
 ### Added
 - Support for async execution

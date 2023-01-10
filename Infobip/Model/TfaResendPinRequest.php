@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * TfaResendPinRequest Class Doc Comment
@@ -54,7 +54,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
       * @var string[]
       */
     protected static $openAPITypes = [
-        'placeholders' => 'map[string,string]'
+        'placeholders' => 'array<string,string>'
     ];
 
     /**
@@ -157,9 +157,9 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -206,7 +206,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Gets placeholders
      *
-     * @return map[string,string]|null
+     * @return array<string,string>|null
      */
     public function getPlaceholders()
     {
@@ -216,7 +216,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
     /**
      * Sets placeholders
      *
-     * @param map[string,string]|null $placeholders Key value pairs that will be replaced during message sending. Placeholder keys should NOT contain curly brackets and should NOT contain a `pin` placeholder. Valid example: `\"placeholders\":{\"firstName\":\"John\"}`
+     * @param array<string,string>|null $placeholders Key value pairs that will be replaced during message sending. Placeholder keys should NOT contain curly brackets and should NOT contain a `pin` placeholder. Valid example: `\"placeholders\":{\"firstName\":\"John\"}`
      *
      * @return self
      */
@@ -233,7 +233,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -245,7 +245,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -258,7 +258,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -274,7 +274,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -286,7 +286,7 @@ class TfaResendPinRequest implements ModelInterface, ArrayAccess, \JsonSerializa
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

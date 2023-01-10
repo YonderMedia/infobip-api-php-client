@@ -23,8 +23,8 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * TfaStartAuthenticationRequest Class Doc Comment
@@ -57,7 +57,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
         'applicationId' => 'string',
         'from' => 'string',
         'messageId' => 'string',
-        'placeholders' => 'map[string,string]',
+        'placeholders' => 'array<string,string>',
         'to' => 'string'
     ];
 
@@ -177,9 +177,9 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -249,7 +249,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
     /**
      * Sets applicationId
      *
-     * @param string $applicationId 2FA application ID.
+     * @param string $applicationId The ID of the application that represents your service, e.g. 2FA for login, 2FA for changing the password, etc.
      *
      * @return self
      */
@@ -297,7 +297,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
     /**
      * Sets messageId
      *
-     * @param string $messageId Message template ID that will be sent to phone number.
+     * @param string $messageId The ID of the message template (message body with the PIN placeholder) that is sent to the recipient.
      *
      * @return self
      */
@@ -311,7 +311,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
     /**
      * Gets placeholders
      *
-     * @return map[string,string]|null
+     * @return array<string,string>|null
      */
     public function getPlaceholders()
     {
@@ -321,7 +321,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
     /**
      * Sets placeholders
      *
-     * @param map[string,string]|null $placeholders Key value pairs that will be replaced during message sending. Placeholder keys should NOT contain curly brackets and should NOT contain a `pin` placeholder. Valid example: `\"placeholders\":{\"firstName\":\"John\"}`
+     * @param array<string,string>|null $placeholders Key value pairs that will be replaced during message sending. Placeholder keys should NOT contain curly brackets and should NOT contain a `pin` placeholder. Valid example: `\"placeholders\":{\"firstName\":\"John\"}`
      *
      * @return self
      */
@@ -362,7 +362,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -374,7 +374,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -387,7 +387,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -403,7 +403,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -415,7 +415,7 @@ class TfaStartAuthenticationRequest implements ModelInterface, ArrayAccess, \Jso
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }

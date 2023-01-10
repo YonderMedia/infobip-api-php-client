@@ -23,13 +23,14 @@
 
 namespace Infobip\Model;
 
-use \ArrayAccess;
-use \Infobip\ObjectSerializer;
+use ArrayAccess;
+use Infobip\ObjectSerializer;
 
 /**
  * SmsLanguage Class Doc Comment
  *
  * @category Class
+ * @description Sets the language parameters for the message being sent.
  * @package  Infobip
  * @author   Infobip Support
  * @link     https://www.infobip.com
@@ -157,9 +158,9 @@ class SmsLanguage implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    
 
-    
+
+
 
     /**
      * Associative array for storing property values
@@ -216,7 +217,7 @@ class SmsLanguage implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets languageCode
      *
-     * @param string|null $languageCode Code for language character set of a message text. Possible values: `TR` for Turkish, `ES` for Spanish, `PT` for Portuguese and `AUTODETECT` to let platform pick character set automatically based on the message text.
+     * @param string|null $languageCode Language code for the correct character set. Possible values: `TR` for Turkish, `ES` for Spanish, `PT` for Portuguese, or `AUTODETECT` to let platform select the character set based on message content.
      *
      * @return self
      */
@@ -233,7 +234,7 @@ class SmsLanguage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
@@ -245,7 +246,7 @@ class SmsLanguage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -258,7 +259,7 @@ class SmsLanguage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -274,7 +275,7 @@ class SmsLanguage implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
@@ -286,7 +287,7 @@ class SmsLanguage implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return ObjectSerializer::sanitizeForSerialization($this);
     }
